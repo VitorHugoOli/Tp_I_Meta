@@ -1,10 +1,11 @@
+from hillClimbling.ils import ILSearch
 from statistics import mean, pstdev
 from typing import List, Callable
 
 from tabulate import tabulate
 
 from hillClimbling.hill_climbing import hill_climbing
-from hillClimbling.variable import Variable
+from hillClimbling.variable import Variable, copyList
 
 
 class Statistics:
@@ -35,8 +36,12 @@ class Statistics:
 
 def solver(objective: Callable, variables: List[Variable], repetition: int):
     stats = Statistics()
-    append_value = stats.values_hc.append
+    append_value_hc = stats.values_hc.append
+    append_value_ils = stats.values_ils.append
     for i in range(repetition):
-        result: List[Variable] = hill_climbing(objective, variables)
-        append_value(objective(*result))
+        result: List[Variable] = hill_climbing(objective, copyList(variables))
+        append_value_hc(objective(*result))
+
+        result: List[Variable] = ILSearch(objective, copyList(variables))
+        append_value_ils(objective(*result))
     stats.details()

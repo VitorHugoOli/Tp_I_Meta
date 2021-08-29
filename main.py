@@ -7,7 +7,7 @@ import math
 
 questions = []
 
-STATS_LOOPS = 30
+STATS_LOOPS = 5
 
 '''
 Função: f(x)=x² 

@@ -9,7 +9,7 @@ N_ITERATIONS = 30
 
 
 def initialize(variables: List[Variable]):
-    candidates = []
+    candidates : List[Variable] = []
     for variable in variables:
         random_dist, candidate_value = noise(variable.li, variable.ls)
         candidate_variable = Variable(variable.label, variable.li, variable.ls, ri=random_dist, value=candidate_value)

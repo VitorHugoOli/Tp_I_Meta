@@ -7,7 +7,7 @@ import math
 
 questions = []
 
-STATS_LOOPS = 5
+STATS_LOOPS = 30
 
 '''
 Função: f(x)=x² 
@@ -56,7 +56,7 @@ print("\nFunção: f(x)= sin(𝑥+𝑦) + (𝑥-𝑦)² - 1.5𝑥 + 2.5y + 1 \nV
 solver(function_1, [Variable('x', -1, 0), Variable('y', -2, -1)], STATS_LOOPS)
 
 '''
-Função: f(x)= sin(𝑥+𝑦) + (𝑥-𝑦)² - 1.5𝑥 + 2.5𝑦 + 1 
+Função: f(x) = -(𝑦 + 47) * math.sin(math.sqrt(abs((𝑥 / 2) + (𝑦 + 47)))) - 𝑥 * math.sin(math.sqrt(abs(𝑥 - (𝑦 + 47)))) 
 Variaveis de entrada: −512 ≤ 𝑥,𝑦 ≤ 512 
 Variaveis de entrada: 511 ≤ 𝑥 ≤ 512 e 404 ≤ 𝑦 ≤ 405
 
@@ -67,13 +67,14 @@ Questão 2)
 def function_2(x: Variable, y: Variable):
     x = x.value
     y = y.value
-    return math.sin(x + y) + (x - y) ** 2 - 1.5 * x + 2.5 * y + 1
+    return -(y + 47) * math.sin(math.sqrt(abs((x / 2) + (y + 47)))) - x * math.sin(math.sqrt(abs(x - (y + 47))))
 
 
 # A) −512 ≤ 𝑥,𝑦 ≤ 512
-print("\nFunção: f(x)= sin(𝑥+𝑦) + (𝑥-𝑦)² - 1.5𝑥 + 2.5𝑦 + 1 \nVariaveis de entrada: −512 ≤ 𝑥,𝑦 ≤ 512 ")
+print("\nFunção: f(x) = -(𝑦 + 47) * math.sin(math.sqrt(abs((𝑥 / 2) + (𝑦 + 47)))) - 𝑥 * math.sin(math.sqrt(abs(𝑥 - (𝑦 + 47)))) \nVariaveis de entrada: −512 ≤ 𝑥,𝑦 ≤ 512 ")
 solver(function_2, [Variable('x', -512, 512), Variable('y', -512, 512)], STATS_LOOPS)
 
 # B) −1 ≤ 𝑥 ≤ 0 e −2 ≤ 𝑦 ≤ −1
-print("\nFunção: f(x)= sin(𝑥+𝑦) + (𝑥-𝑦)² - 1.5𝑥 + 2.5𝑦 + 1 \nVariaveis de entrada: 511 ≤ 𝑥 ≤ 512 e 404 ≤ 𝑦 ≤ 405")
+print("\nFunção: f(x) = -(𝑦 + 47) * math.sin(math.sqrt(abs((𝑥 / 2) + (𝑦 + 47)))) - 𝑥 * math.sin(math.sqrt(abs(𝑥 - (𝑦 + 47)))) \nVariaveis de entrada: 511 ≤ 𝑥 ≤ 512 e 404 "
+      "≤ 𝑦 ≤ 405")
 solver(function_2, [Variable('x', 511, 512), Variable('y', 404, 405)], STATS_LOOPS)

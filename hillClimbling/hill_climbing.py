@@ -2,14 +2,16 @@ from typing import List, Callable
 from random import random
 import copy
 
+from hillClimbling.aux import noise
 from hillClimbling.variable import Variable, copyList
 
+# a(x,y)=-(y+47) sin(sqrt(abs(((x)/(2))+y+47)))-x sin(sqrt(abs(x-(y+47))))
 P = 1
-N_ITERATIONS = 30
+N_ITERATIONS = 100
 
 
 def initialize(variables: List[Variable]):
-    candidates : List[Variable] = []
+    candidates: List[Variable] = []
     for variable in variables:
         random_dist, candidate_value = noise(variable.li, variable.ls)
         candidate_variable = Variable(variable.label, variable.li, variable.ls, ri=random_dist, value=candidate_value)
@@ -17,15 +19,10 @@ def initialize(variables: List[Variable]):
     return candidates
 
 
-def noise(min_value, max_value):
-    random_dist = random()
-    random_value = (max_value - min_value) * random_dist + min_value
-    return random_dist, random_value
-
-
 def modify(candidates: List[Variable], p):
+    # Alterar as margens de buscas(li e ls)
     for candidate in candidates:
-        if p >= candidate.ri:
+        if p >= candidate.ri:  # Não faz senttido
             while True:
                 _, candidate.ri = noise(candidate.li, candidate.ls)
                 _, n = noise(-candidate.ri, candidate.ri)
@@ -47,8 +44,9 @@ def isIdeal(candidates: List[Variable]):
 
 def hill_climbing(objective: Callable, variables: List[Variable], p=P, n_iterations=N_ITERATIONS, show_result=False):
     s = initialize(variables)
-    max_iterations = 300
+    max_iterations = 100
     it_count = 0
+
     while True:
         it_count += 1
 

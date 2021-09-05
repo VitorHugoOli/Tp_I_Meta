@@ -35,13 +35,13 @@ class Statistics:
         ]
         print(tabulate(table, headers=self.HEAD, tablefmt="fancy_grid"))
 
-    def boxplot(self):
+    def boxplot(self, plot_name=''):
         df = pd.DataFrame({"HS": self.values_hc, "ILS": self.values_ils})
         df.plot.box()
-        plt.show()
+        plt.savefig(plot_name+".png")
 
 
-def solver(objective: Callable, variables: List[Variable], repetition: int):
+def solver(objective: Callable, variables: List[Variable], repetition: int, plot_name=''):
     stats = Statistics()
     append_value_hc = stats.values_hc.append
     append_value_ils = stats.values_ils.append
@@ -54,4 +54,4 @@ def solver(objective: Callable, variables: List[Variable], repetition: int):
         append_value_ils(objective(*result))
 
     stats.details()
-    stats.boxplot()
+    stats.boxplot(plot_name)

@@ -73,4 +73,4 @@ solver(function_2, [Variable('x', -512, 512), Variable('y', -512, 512)], STATS_L
 # B) −1 ≤ 𝑥 ≤ 0 e −2 ≤ 𝑦 ≤ −1
 print(
     "\nFunção: f(x) = -(𝑦 + 47) * math.sin(math.sqrt(abs((𝑥 / 2) + (𝑦 + 47)))) - 𝑥 * math.sin(math.sqrt(abs(𝑥 - (𝑦 + 47)))) \nVariaveis de entrada: 511 ≤ 𝑥 ≤ 512 e 404 ≤ 𝑦 ≤ 405")
-solver(function_2, [Variable('x', 511, 512), Variable('y', 404, 405)], STATS_LOOPS, plot_name='function 2 (−512 ≤ 𝑥,𝑦 ≤ 512)')
+solver(function_2, [Variable('x', 511, 512), Variable('y', 404, 405)], STATS_LOOPS, plot_name='function 2 (511 ≤ 𝑥 ≤ 512 e 404 ≤ 𝑦 ≤ 405)')

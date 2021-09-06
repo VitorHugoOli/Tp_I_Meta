@@ -7,7 +7,7 @@ from hillClimbling.hill_climbing import hill_climbing, initialize, modify, noise
 import numpy as np
 
 N_ITERATIONS = 300
-BASIS_LIMIT = 5 / 100
+BASIS_LIMIT = 30
 
 
 class MemoryILS:

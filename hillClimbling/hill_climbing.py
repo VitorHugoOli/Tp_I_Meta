@@ -7,7 +7,9 @@ from hillClimbling.variable import Variable, copyList
 
 # a(x,y)=-(y+47) sin(sqrt(abs(((x)/(2))+y+47)))-x sin(sqrt(abs(x-(y+47))))
 P = 1
-N_ITERATIONS = 100
+HILL_ITERATIONS = 100
+HILL_STEEPER_ITERATIONS = 100
+
 
 
 def initialize(variables: List[Variable]):
@@ -42,9 +44,8 @@ def isIdeal(candidates: List[Variable]):
     pass
 
 
-def hill_climbing(objective: Callable, variables: List[Variable], p=P, n_iterations=N_ITERATIONS, show_result=False):
+def hill_climbing(objective: Callable, variables: List[Variable], p=P, n_iterations=HILL_ITERATIONS, show_result=False):
     s = initialize(variables)
-    max_iterations = 100
     it_count = 0
 
     while True:
@@ -52,7 +53,7 @@ def hill_climbing(objective: Callable, variables: List[Variable], p=P, n_iterati
 
         r = modify(copyList(s), p)
 
-        for i in range(n_iterations):
+        for i in range(HILL_STEEPER_ITERATIONS):
             w = modify(copyList(s), p)
             if quality(w, objective) >= quality(r, objective):
                 r = w
@@ -60,7 +61,7 @@ def hill_climbing(objective: Callable, variables: List[Variable], p=P, n_iterati
         if quality(r, objective) > quality(s, objective):
             s = r
 
-        if isIdeal(s) or it_count >= max_iterations:
+        if isIdeal(s) or it_count >= n_iterations:
             if show_result:
                 print(f"Resultado: ({s[0]},{s[1]}) = {objective(*s)}")
             break

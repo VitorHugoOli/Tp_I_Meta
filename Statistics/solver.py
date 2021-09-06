@@ -1,12 +1,12 @@
 from statistics import mean, pstdev
 from typing import List, Callable
 
-from matplotlib import pyplot as plt
 from tabulate import tabulate
 
 from hillClimbling.hill_climbing import hill_climbing
 from hillClimbling.ils_v2 import ILSearch
 from hillClimbling.variable import Variable, copyList
+from matplotlib import pyplot as plt
 import pandas as pd
 
 

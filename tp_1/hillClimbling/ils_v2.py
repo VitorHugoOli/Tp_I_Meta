@@ -6,13 +6,14 @@ from hillClimbling.variable import Variable, copyList
 from hillClimbling.hill_climbing import hill_climbing, initialize, modify, noise
 import numpy as np
 
-N_ITERATIONS = 300
+N_ITERATIONS = 100
 BASIS_LIMIT = 30
 
 
 class MemoryILS:
-    def __init__(self, history=None):
-        self.history = history or []
+    def __init__(self, basis_limit=BASIS_LIMIT):
+        self.basis_limit = basis_limit
+        self.history = []
         self.best_variables: List[Variable] = []
         self.iterations: int = 0
 
@@ -20,14 +21,14 @@ class MemoryILS:
         self.iterations += 1
 
     def terminated(self):
-        return N_ITERATIONS >= self.iterations
+        return self.iterations >= N_ITERATIONS
 
     def isInSameBasis(self, value):
         """
-        Verifica para o valor passado se este está em um raio de 5% em relaçõo aos valores da memoria
+        Verifica para o valor passado se este está em um raio de self.basis_limit em relaçõo aos valores da memoria
         """
         for i in self.history:
-            if i * (1 + BASIS_LIMIT) >= value <= i * (1 - BASIS_LIMIT):
+            if i + self.basis_limit <= value <= i - self.basis_limit:
                 return True
         return False
 
@@ -48,7 +49,7 @@ class MemoryILS:
 def perturbation(objective, s: List[Variable], memory: MemoryILS):
     """
     Calcula um pertubacao atual para variaveis de decisão e valida se o valor
-    objetivo das variaveis de decisão esta distanti em um raio de 5% dos
+    objetivo das variaveis de decisão esta distante em um raio de BASIS_LIMIT dos
     valores armazenados no history
     """
     while True:
@@ -56,6 +57,7 @@ def perturbation(objective, s: List[Variable], memory: MemoryILS):
             i.value = (i.ls - i.li) * random.random() + i.li
 
         if not memory.isInSameBasis(objective(*s)):
+            memory.history.append(objective(*s))
             return s
 
 
@@ -84,19 +86,19 @@ def criteria(objective, s_old: List[Variable], s_new: List[Variable], memory: Me
         return s_old
 
 
-def ILSearch(objective: Callable, variables: List[Variable], local_search=None):
-    memory = MemoryILS()
+def ILSearch(objective: Callable, variables: List[Variable], local_search=None, basis_limit=BASIS_LIMIT):
+    memory = MemoryILS(basis_limit)
     local_search = local_search or hill_climbing
 
     s0 = initialize(variables)  # Gerar solução inicial s0
-    memory.best_variables = s0
-    s1 = local_search(objective, s0)  # Busca local em s0
+    s1 = local_search(objective, s0, n_iterations=100)  # Busca local em s0
+    memory.best_variables = s1
 
     while True:
         memory.increaseIteration()
 
         s2 = perturbation(objective, copyList(s1), memory)
-        s3 = local_search(objective, s2)
+        s3 = local_search(objective, s2, n_iterations=100)
         s1 = criteria(objective, s1, s3, memory)
 
         if memory.terminated():

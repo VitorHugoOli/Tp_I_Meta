@@ -13,18 +13,22 @@ def problem(x1, x2):
 pop = Population(100, [x1, x2])
 
 logger.printMessage('Antes da selecao')
-logger.logPop(pop, problem)
+# logger.logPop(pop, problem)
 
-#TODO: PURGE the poor ones
 for i in range(100):
-    parents = pop.selection()
-    for p in parents:
-        pop.population.remove(p)
+    parents, worst_ones = pop.selection()
     children = pop.crossing_over(parents)
-    for c in children:
-        pop.population.append(c)
+    pop.kill_half(worst_ones)
+    
+    survivors, losers, lucky_ones = Population.geracional_war(parents, children)
+    
+    pop.kill_all(losers)
+    pop.insert(lucky_ones)
+    pop.insert(survivors)
+    if i % 10 == 0:
+        logger.logPop(pop, problem)
 
 logger.printMessage('Depois da seleção')
-logger.logPop(pop, problem)
+# logger.logPop(pop, problem)
 
 

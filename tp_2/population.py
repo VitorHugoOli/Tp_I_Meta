@@ -1,9 +1,11 @@
+from os import stat_result
 from typing import Union, Callable, List
 import numpy as np
 from individuo import Individuo
 from variable import Variable
 from math import floor
 
+import random
 class Population:
     def __init__(
         self,
@@ -33,9 +35,13 @@ class Population:
 
         # Em ordem do pior individuo -> melhor 
         sort_population: np.ndarray = sorted(self.population, key=lambda x: x.eval_value or 0)
-        parents = sort_population[floor(-len(self.population) * self.parent_rate):]
         
-        return parents
+        parent_cut = floor(len(self.population) * self.parent_rate) 
+
+        parents = sort_population[-parent_cut:]
+        worst_ones = sort_population[:parent_cut]
+
+        return parents, worst_ones
 
     def crossing_over(self, parents:List[Individuo]):
         np.random.shuffle(parents)
@@ -55,11 +61,40 @@ class Population:
 
         return children
     
-    # def survivor():
+    def kill_half(self, individuals:List[Individuo]):
+        np.random.shuffle(individuals)
+        choosen_to_kill = individuals[:int(len(individuals)/2)]
+        for ind in choosen_to_kill:
+            if ind in self.population:
+                self.population.remove(ind)
 
+    def kill_all(self, individuals:List[Individuo]):
+        for ind in individuals:
+            if ind in self.population:
+                self.population.remove(ind)
 
-    def best_fellow(self):
-        return self.population.sort()[0]
+    @staticmethod
+    def geracional_war(parents:List[Individuo], children:List[Individuo], parent_strength=0.5):
+        
+        losers = []
+        survivors = []
+        for i in range(len(parents)):
+            parent = parents[i]
+            child = children[i]
+            
+            loser, survivor = (child, parent) if random.random() < parent_strength else (parent, child)
+            losers.append(loser)
+            survivors.append(survivor)
+        
+        # Repescagem
+        lucky_ones = losers[0::2]
+        return survivors, losers, lucky_ones
+
+    def insert(self, individuals:List[Individuo]):
+        for individual in individuals:
+            if not individual in self.population:
+                self.population.append(individual)
+
 
     def replace_fellows(self, to_remove, to_add):
         for index, i in enumerate(to_remove):

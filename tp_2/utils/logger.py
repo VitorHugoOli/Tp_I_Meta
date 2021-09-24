@@ -1,9 +1,11 @@
 def printMessage(message):
     print("\u001b[36m \n ------------ " + message + " ---------------\n \u001b[0m")
 
+
 import statistics
 
-def logPop(pop, problem):
+
+def printPop(pop, problem):
     printMessage("População")
     print(str(pop))
 

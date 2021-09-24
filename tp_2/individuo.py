@@ -15,11 +15,18 @@ class Individuo:
         Pontuação do individuo
         @rtype: object
         """
+        parms = list(self.dna)
+
+        ## Penalidade por morte
+        
+        # for restriction in restrictions:
+        #     if not restriction(*parms):
+        #         self.eval_value = - np.Infinity
+        #         return self.eval_value
 
         if self.eval_value is not None:
             return self.eval_value
 
-        parms = list(self.dna)
 
         # Todo: Aplicar metodo de avaliaca das restricoes
         # restricts = [i(*parms) for i in restrictions]
@@ -27,3 +34,12 @@ class Individuo:
         value = objective_function(*parms)
         self.eval_value = -value
         return self.eval_value
+
+    # Código de corno
+    # def rest(self, restrictions:List[Callable]):
+    #     parms = list(self.dna)
+    #     for index, restriction in enumerate(restrictions):
+    #         if not restriction(*parms):
+    #             print(f"R{index + 1} ==> Não Satisfeita")
+    #         else:
+    #             print(f"R{index + 1} ==> Satisfeita")

@@ -8,7 +8,7 @@ def logPop(pop, problem):
     print(str(pop))
 
     printMessage("Média Fitness")
-    evals = pop.eval(problem, [])
+    evals = pop.eval(problem)
     print(statistics.mean(evals))
 
 

@@ -6,34 +6,39 @@ from variable import Variable
 from math import floor
 
 import random
+
 class Population:
     def __init__(
         self,
         size: int,
         variables: List[Variable],
-        parent_rate:float = 0.2,
+        restrictions: List[Callable],
+
+        parent_rate:float = 0.2
         cut_point:float = 0.5):
 
         self.population: List[Individuo] = []
         self.parent_rate = parent_rate
         self.cut_point = cut_point
+        self.restrictions = restrictions
+
 
         for i in range(size):
             dna = np.full(len(variables), [i.random_value() for i in variables])
             self.population.append(Individuo(dna))
 
     def __str__(self) -> str:
-        return str(', '.join(str(e) for e in self.population))
+        return str(', '.join(str(ev ) for e in self.population))
 
-    def eval(self, objective_function: Callable, restrictions: List[Callable]):
+    def eval(self, objective_function: Callable):
         evals = []
         for i in self.population:
-            evals.append(i.eval(objective_function, restrictions))
+            evals.append(i.eval(objective_function, self.restrictions))
         return evals
 
     def selection(self) -> List[Individuo]:
-
-        # Em ordem do pior individuo -> melhor 
+        
+        # Em ordem do pior individuo -> melhor]
         sort_population: np.ndarray = sorted(self.population, key=lambda x: x.eval_value or 0)
         
         parent_cut = floor(len(self.population) * self.parent_rate) 
@@ -62,8 +67,11 @@ class Population:
         return children
     
     def kill_half(self, individuals:List[Individuo]):
+
         np.random.shuffle(individuals)
+        
         choosen_to_kill = individuals[:int(len(individuals)/2)]
+        
         for ind in choosen_to_kill:
             if ind in self.population:
                 self.population.remove(ind)
@@ -99,3 +107,9 @@ class Population:
     def replace_fellows(self, to_remove, to_add):
         for index, i in enumerate(to_remove):
             self.population = np.where(self.population == i, to_add[index], self.population)
+
+
+    @staticmethod
+    def mutation(children:List[Individuo]):
+         
+    

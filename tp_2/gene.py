@@ -1,3 +1,6 @@
+from variable import Variable
+
+
 class Gene:
     def __init__(self, value, restriction, var: Variable):
         self.restriction = restriction

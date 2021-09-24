@@ -1,5 +1,6 @@
 import random
 
+
 class Variable:
     def __init__(self, label, li, ls):
         self.label = label

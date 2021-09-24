@@ -1,44 +1,12 @@
-from os import stat_result
-from typing import Union, Callable, List
-import numpy as np
-from individuo import Individuo
-from variable import Variable
-from math import floor
-
 import random
+from math import floor
+from typing import List
 
+import numpy as np
 
-class Restriction:
-    def __init__(self, restriction: Callable, alpha=0.4):
-        """
-
-        @param restriction: (TRATAMENTO DE RESTRIÇÕES) Funcao da restrição
-        @param alpha: (TRATAMENTO DE RESTRIÇÕES) Factibilidade de aceitação de uma restrição
-        """
-        self.restriction = restriction
-        self.alpha = alpha
-
-
-class Problem:
-    def __init__(
-            self,
-            variables: List[Variable],
-            objective: Callable,
-            restrictions: List[Restriction],
-            parent_rate: float = 0.2,
-            cut_point: float = 0.5, ):
-        """
-        @param variables: Variable do Problema
-        @param restrictions: Funçoes de restrição do problema
-        @param parent_rate: (SELEÇÃO)Taxa de pais que serão selecionados da população
-        @param restrictions: (TRATAMENTO DE RESTRIÇÕES) Restriçoes contento a funcao e sua factibilidade
-        @param cut_point: (CRUZAMENTO) Ponto de corte no momento do cruzamento
-        """
-        self.objective = objective
-        self.cut_point = cut_point
-        self.parent_rate = parent_rate
-        self.restrictions = restrictions
-        self.variables = variables
+from individuo import Individuo
+from problem import Problem
+from utils.logger import printVector
 
 
 class Population:
@@ -48,7 +16,10 @@ class Population:
             problem: Problem,
     ):
         self.population: List[Individuo] = []
+        self.generation = 1
         self.problem = problem
+        self.elitists_number = floor(size * self.problem.elitism_rate)
+        self.children_number = size - self.elitists_number
 
         for i in range(size):
             dna = np.full(len(problem.variables), [i.random_value() for i in problem.variables])
@@ -58,16 +29,30 @@ class Population:
         for i in self.population:
             i.eval(self.problem.objective, self.problem.restrictions)
 
-    def selection(self) -> (List[Individuo], List[Individuo]):
-        # Em ordem do pior individuo -> melhor]
-        sort_population: np.ndarray = sorted(self.population, key=lambda x: x.eval_value or 0)
+    def bourgeois(self) -> (List[Individuo], List[Individuo]):
+        # Em ordem do pior individuo -> melhor
+        if self.elitists_number == 0:
+            return []
+        sort_population = sorted(self.population, key=lambda x: x.eval_value or 0)
+        elitists = sort_population[-self.elitists_number:]
+        return elitists
 
-        parent_cut = floor(len(self.population) * self.problem.parent_rate)
+    def surubao(self):
+        children: List[Individuo] = []
+        for i in range(int(self.children_number / 2)):
+            parents = [self.lucha_libre() for _ in range(2)]
+            children += self.crossing_over(parents)
+        return children
 
-        parents = sort_population[-parent_cut:]
-        worst_ones = sort_population[:parent_cut]
-
-        return parents, worst_ones
+    def lucha_libre(self):
+        fighters: List[Individuo] = []
+        best = random.choice(self.population)
+        fighters.append(best)
+        for i in range(1, self.problem.t_individuals):
+            fighters.append(random.choice(self.population))
+            if fighters[i].eval_value < best.eval_value:
+                best = fighters[i]
+        return best
 
     def crossing_over(self, parents: List[Individuo]):
         np.random.shuffle(parents)
@@ -87,46 +72,12 @@ class Population:
 
         return children
 
-    def kill_half(self, individuals: List[Individuo]):
+    def new_generation(self, to_add):
+        self.generation += 1
+        self.population = to_add
 
-        np.random.shuffle(individuals)
-
-        choosen_to_kill = individuals[:int(len(individuals) / 2)]
-
-        for ind in choosen_to_kill:
-            if ind in self.population:
-                self.population.remove(ind)
-
-    def kill_all(self, individuals: List[Individuo]):
-        for ind in individuals:
-            if ind in self.population:
-                self.population.remove(ind)
-
-    @staticmethod
-    def geracional_war(parents: List[Individuo], children: List[Individuo], parent_strength=0.5):
-
-        losers = []
-        survivors = []
-        for i in range(len(parents)):
-            parent = parents[i]
-            child = children[i]
-
-            loser, survivor = (child, parent) if random.random() < parent_strength else (parent, child)
-            losers.append(loser)
-            survivors.append(survivor)
-
-        # Repescagem
-        lucky_ones = losers[0::2]
-        return survivors, losers, lucky_ones
-
-    def insert(self, individuals: List[Individuo]):
-        for individual in individuals:
-            if not individual in self.population:
-                self.population.append(individual)
-
-    def replace_fellows(self, to_remove, to_add):
-        for index, i in enumerate(to_remove):
-            self.population = np.where(self.population == i, to_add[index], self.population)
+    def stop_criteria(self):
+        return self.generation == self.problem.n_generations
 
     @staticmethod
     def mutation(children: List[Individuo]):

@@ -1,8 +1,8 @@
+import statistics
+
+
 def printMessage(message):
     print("\u001b[36m \n ------------ " + message + " ---------------\n \u001b[0m")
-
-
-import statistics
 
 
 def printPop(pop, problem):
@@ -10,8 +10,7 @@ def printPop(pop, problem):
     print(str(pop))
 
     printMessage("Média Fitness")
-    evals = pop.eval(problem)
-    print(statistics.mean(evals))
+    print(statistics.mean([i.eval_value or 0 for i in pop.population]))
 
 
 def printVector(list):

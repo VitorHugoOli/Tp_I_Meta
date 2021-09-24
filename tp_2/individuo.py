@@ -1,9 +1,8 @@
-import random
 from typing import List, Callable
 
 import numpy as np
 
-from tp_2.population import Restriction
+from restrictions import Restriction
 
 
 class Individuo:
@@ -19,7 +18,8 @@ class Individuo:
         return (restriction.alpha * max(0, restriction.restriction(*params))) ** a
 
     def eval(self, objective_function: Callable, restrictions: List[Restriction]):
-        assert self.eval_value is not None, self.eval_value
+        if self.eval_value is not None:
+            return self.eval_value
 
         params = list(self.dna)
 

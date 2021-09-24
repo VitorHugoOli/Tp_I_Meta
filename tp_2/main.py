@@ -1,8 +1,10 @@
 # (x1 - 10)³ + (x2 - 20)³
-from math import log
-from variable import Variable
-from population import Population, Problem, Restriction
+
+from population import Problem, Population
+from restrictions import Restriction
 from utils import logger as log
+from utils.logger import printVector
+from variable import Variable
 
 count_loop = 0
 
@@ -24,29 +26,28 @@ def restriction2(x, y):
 
 problem_1 = Problem([x1, x2], objective, [Restriction(restriction1), Restriction(restriction2)])
 
-pop = Population(100, problem_1)
+pop = Population(10, problem_1)
+
+log.printPop(pop, objective)
 
 log.printMessage('Antes da selecao')
 
 while True:
+    if pop.generation % 10 == 0:
+        log.printPop(pop, objective)
+
     pop.eval()
 
-    parents, worst_ones = pop.selection()
-
-    children = pop.crossing_over(parents)
-
-    pop.kill_half(worst_ones)
-
-    survivors, losers, lucky_ones = Population.geracional_war(parents, children)
-
-    pop.kill_all(losers)
-    pop.insert(lucky_ones)
-    pop.insert(survivors)
+    elitists = pop.bourgeois()
+    children = pop.surubao()
 
     # Mutacao
+    # if pop.generation % 10 == 0:
+    #     printVector(elitists)
+    #     printVector(children)
+    #     printVector((elitists + children))
 
-    if count_loop % 10 == 0:
-        log.printPop(pop, objective)
-    count_loop += 1
-    if count_loop == 100:
+    pop.new_generation((elitists + children))
+
+    if pop.stop_criteria():
         break

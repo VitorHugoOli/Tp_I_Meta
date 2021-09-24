@@ -34,7 +34,7 @@ class Population:
         if self.elitists_number == 0:
             return []
         sort_population = sorted(self.population, key=lambda x: x.eval_value or 0)
-        elitists = sort_population[-self.elitists_number:]
+        elitists = sort_population[:self.elitists_number]
         return elitists
 
     def surubao(self):

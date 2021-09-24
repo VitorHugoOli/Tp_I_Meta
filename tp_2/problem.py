@@ -10,7 +10,7 @@ class Problem:
             variables: List[Variable],
             objective: Callable,
             restrictions: List[Restriction],
-            elitism_rate: float = 0.4,
+            elitism_rate: float = 0.04,
             cut_point: float = 0.5,
             t_individuals: int = 5,
             n_generations=100

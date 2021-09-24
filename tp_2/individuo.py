@@ -23,5 +23,5 @@ class Individuo:
 
         params = list(self.dna)
 
-        self.eval_value = -(objective_function(*params) + sum([self.penalidade(i, params) for i in restrictions]))
+        self.eval_value = (objective_function(*params) + sum([self.penalidade(i, params) for i in restrictions]))
         return self.eval_value

@@ -34,12 +34,12 @@ class Otimizer:
 
     def __init__(self, problem:Problem) -> None:
         self.problem = problem
-        self.pop_size = 8000
+        self.pop_size = 800
         self.boundaries = [
-            Variable("cut_point", 0.7, 0.8),
-            Variable("elitism_rate", 0.045, 0.055),
-            Variable("n_generations", 260, 290),
-            Variable("ohm", 0.45, 0.55),
+            Variable("cut_point", 0.2, 0.8),
+            Variable("elitism_rate", 0.01, 0.1),
+            Variable("n_generations", 100, 1000),
+            Variable("ohm", 0.0, 0.1),
             Variable("t_individuals", 2, 6)
         ]
 

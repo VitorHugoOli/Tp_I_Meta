@@ -1,7 +1,7 @@
 # (x1 - 10)³ + (x2 - 20)³
 
 from otimizer import Otimizer
-from problem2 import get_variables, objective_2
+from problem2 import get_restrictions, get_variables, objective_2
 from population import Problem, Population
 from restrictions import Restriction
 from utils import logger as log
@@ -58,11 +58,11 @@ def ag_problem_1():
             break
 
 
-problem_2 = Problem(get_variables(),objective_2,[],
-                    elitism_rate=0.04,
-                    cut_point=0.5,
+problem_2 = Problem(get_variables(),objective_2,get_restrictions(),
+                    elitism_rate=0.0667236920820883,
+                    cut_point=0.6834153362370213,
                     t_individuals=3,
-                    n_generations=100, )
+                    n_generations=175, )
 
 def ag_problem_2():
     pop = Population(100, problem_2)
@@ -87,6 +87,6 @@ def ag_problem_2():
 
 
 if __name__ == "__main__":
-    ot = Otimizer(problem_1)
+    ot = Otimizer(problem_2)
     ot.get_best_params()
     

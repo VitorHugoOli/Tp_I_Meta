@@ -1,6 +1,6 @@
 import random
 from math import floor
-from typing import List, Union
+from typing import List
 
 import numpy as np
 
@@ -36,7 +36,7 @@ class Population:
         elitists = sort_population[:self.elitists_number]
         return elitists
 
-    def surubao(self):
+    def cross_over(self):
         children: List[Individuo] = []
         for i in range(int(self.children_number / 2)):
             parents = [self.lucha_libre() for _ in range(2)]
@@ -85,29 +85,25 @@ class Population:
     def stop_criteria(self):
         return self.generation == self.problem.n_generations
 
-    def x_men(self, children: List[Individuo]):
-        
+    def mutation(self, children: List[Individuo]):
+
         if self.problem.mutation_chance > random.random():
             child = random.choice(children)
             child = self.problem.apply_pertubation(child)
 
     def get_best(self) -> Individuo:
         sort_population = sorted(self.population, key=lambda x: x.eval_value or 0)
-        return sort_population[0] 
-    
-    def solve(self) -> Union[Individuo, float]:
+        return sort_population[0]
+
+    def solve(self) -> (Individuo, float):
         for i in range(self.problem.n_generations):
             self.eval()
             elitists = self.bourgeois()
-            children = self.surubao()
-            self.x_men(children)
+            children = self.cross_over()
+            self.mutation(children)
             self.new_generation((elitists + children))
         best = self.get_best()
-        return (best, self.problem.objective(*best.dna))
-
-
+        return best, self.problem.objective(*best.dna)
 
     def __str__(self) -> str:
         return str(', '.join(str(e) for e in self.population))
-
-    

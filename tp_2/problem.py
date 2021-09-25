@@ -1,9 +1,7 @@
-from individuo import Individuo
 from random import random
 from typing import List, Callable
 
-from numpy.lib.function_base import copy
-
+from individuo import Individuo
 from restrictions import Restriction
 from variable import Variable
 
@@ -39,18 +37,14 @@ class Problem:
         self.t_individuals = t_individuals
         self.ohm = ohm
 
-
-    def apply_pertubation(self, child:Individuo):
-        
+    def apply_pertubation(self, child: Individuo):
         for i in range(len(self.variables)):
             v = self.variables[i]
             value = None
-            while value is None or (value < v.li or value > v.ls): 
+            while value is None or (value < v.li or value > v.ls):
                 value = child.dna[i] + (self.ohm * (v.ls - v.li) * ((2 * random()) - 1))
             child.dna[i] = value
         return child
 
     def perturbation_vector(self, ohm=1):
-        v = []
-
         return [(ohm * (i.ls - i.li)) * ((2 * random()) - 1) for i in self.variables]

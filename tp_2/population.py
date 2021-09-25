@@ -1,6 +1,6 @@
 import random
 from math import floor
-from typing import List
+from typing import List, Union
 
 import numpy as np
 
@@ -28,7 +28,7 @@ class Population:
         for i in self.population:
             i.eval(self.problem.objective, self.problem.restrictions)
 
-    def bourgeois(self) -> (List[Individuo], List[Individuo]):
+    def bourgeois(self) -> List[Individuo]:
         # Em ordem do pior individuo -> melhor
         if self.elitists_number == 0:
             return []
@@ -86,10 +86,28 @@ class Population:
         return self.generation == self.problem.n_generations
 
     def x_men(self, children: List[Individuo]):
-        if self.problem.mutation_chance < random.random():
+        
+        if self.problem.mutation_chance > random.random():
             child = random.choice(children)
-            # child.dna = np.add(child.dna, self.problem.perturbation_vector())
-            child.dna = [i.random_value() for i in self.problem.variables]
+            child = self.problem.apply_pertubation(child)
+
+    def get_best(self) -> Individuo:
+        sort_population = sorted(self.population, key=lambda x: x.eval_value or 0)
+        return sort_population[0] 
+    
+    def solve(self) -> Union[Individuo, float]:
+        for i in range(self.problem.n_generations):
+            self.eval()
+            elitists = self.bourgeois()
+            children = self.surubao()
+            self.x_men(children)
+            self.new_generation((elitists + children))
+        best = self.get_best()
+        return (best, self.problem.objective(*best.dna))
+
+
 
     def __str__(self) -> str:
         return str(', '.join(str(e) for e in self.population))
+
+    

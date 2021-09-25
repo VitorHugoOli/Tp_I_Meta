@@ -11,7 +11,7 @@ class Individuo:
         self.eval_value = None
 
     def __str__(self) -> str:
-        return "[" + str(', '.join(str(e) for e in self.dna)) + "]"
+        return "[" + str(', '.join("{:0.5f}".format(e) for e in self.dna)) + "]"
 
     @staticmethod
     def penalidade(restriction: Restriction, params: List[float], a=1):

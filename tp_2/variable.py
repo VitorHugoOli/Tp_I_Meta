@@ -8,4 +8,4 @@ class Variable:
         self.ls = ls  # Limit superior
 
     def random_value(self):
-        return random.randrange(self.li, self.ls)
+        return random.uniform(self.li, self.ls)

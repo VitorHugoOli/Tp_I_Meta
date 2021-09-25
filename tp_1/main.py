@@ -1,9 +1,10 @@
 from typing import List
 
-from tp_1.statistics.solver import solver
 from hillClimbling.hill_climbing import hill_climbing
 from hillClimbling.variable import Variable
 import math
+
+from statistics_s.solver import solver
 
 questions = []
 
@@ -20,12 +21,12 @@ Função para avaliação do algoritimo
 def function_0(x: Variable, y: Variable):
     x = x.value
     y = y.value
-    return x ** 2
+    return ((x - 10) ** 3) + ((y - 20) ** 3)
 
 
 # A) −1.5 ≤ 𝑥 ≤ 4 e −3 ≤ 𝑦 ≤ 4
 print("\nFunção: f(x)=x² \nVariaveis de entrada: −1.5 ≤ 𝑥 ≤ 4 e −3 ≤ 𝑦 ≤ 4")
-solver(function_0, [Variable('x', -1.5, 4), Variable('y', -3, 4)], STATS_LOOPS, plot_name='x^2', basis_limit=0)
+solver(function_0, [Variable('x', 13, 100), Variable('y', 0, 100)], STATS_LOOPS, plot_name='x^2', basis_limit=0)
 
 '''
 Função: f(x)= sin(𝑥+𝑦) + (𝑥-𝑦)² - 1.5𝑥 + 2.5y + 1 

@@ -6,9 +6,10 @@ from tabulate import tabulate
 from matplotlib import pyplot as plt
 import pandas as pd
 
-from tp_1.hillClimbling.hill_climbing import hill_climbing
-from tp_1.hillClimbling.ils_v2 import ILSearch
-from tp_1.hillClimbling.variable import Variable, copyList
+from hillClimbling.aux import printVector
+from hillClimbling.hill_climbing import hill_climbing
+from hillClimbling.ils_v2 import ILSearch
+from hillClimbling.variable import Variable, copyList
 
 
 class Statistics:
@@ -52,6 +53,7 @@ def solver(objective: Callable, variables: List[Variable], repetition: int, plot
         append_value_hc(objective(*result))
 
         result: List[Variable] = ILSearch(objective, copyList(variables), basis_limit=basis_limit)
+        print(printVector(result))
         append_value_ils(objective(*result))
 
     stats.details()

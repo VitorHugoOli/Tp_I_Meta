@@ -6,7 +6,6 @@ import numpy as np
 
 from individuo import Individuo
 from problem import Problem
-from utils.logger import printVector
 
 
 class Population:
@@ -55,12 +54,20 @@ class Population:
         return best
 
     def crossing_over(self, parents: List[Individuo]):
-        np.random.shuffle(parents)
+        return self.cross_over_simple(parents)
 
+    def cross_over_flat(self, parents):
+        brother_dna = np.empty(len(self.problem.variables))
+        sister_dna = np.empty(len(self.problem.variables))
+        for i in range(len(self.problem.variables)):
+            np.append(brother_dna, random.uniform(parents[0].dna[i], parents[1].dna[i]))
+            np.append(sister_dna, random.uniform(parents[0].dna[i], parents[1].dna[i]))
+        return [Individuo(brother_dna), Individuo(sister_dna)]
+
+    def cross_over_simple(self, parents):
         first_half = floor(len(parents[0].dna) * self.problem.cut_point)
         second_half = -len(parents[0].dna) + first_half
         children: List[Individuo] = []
-
         for i in range(0, len(parents), 2):
             father_dna = parents[i].dna
             mother_dna = parents[i + 1].dna
@@ -69,7 +76,6 @@ class Population:
             sister_dna = np.concatenate((mother_dna[:first_half], father_dna[second_half:]))
 
             children += [Individuo(brother_dna), Individuo(sister_dna)]
-
         return children
 
     def new_generation(self, to_add):
@@ -79,9 +85,11 @@ class Population:
     def stop_criteria(self):
         return self.generation == self.problem.n_generations
 
-    @staticmethod
-    def mutation(children: List[Individuo]):
-        pass
+    def x_men(self, children: List[Individuo]):
+        if self.problem.mutation_chance < random.random():
+            child = random.choice(children)
+            # child.dna = np.add(child.dna, self.problem.perturbation_vector())
+            child.dna = [i.random_value() for i in self.problem.variables]
 
     def __str__(self) -> str:
         return str(', '.join(str(e) for e in self.population))

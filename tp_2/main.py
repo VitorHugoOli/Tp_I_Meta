@@ -25,12 +25,12 @@ def restriction2(x, y):
 
 problem_1 = Problem([x1, x2], objective,
                     [Restriction(restriction1), Restriction(restriction2)],
-                    elitism_rate=0.002,
+                    elitism_rate=0.04,
                     cut_point=0.5,
                     t_individuals=3,
-                    n_generations=100, )
+                    n_generations=10000, )
 
-pop = Population(1000, problem_1)
+pop = Population(100, problem_1)
 
 log.printPop(pop, objective)
 
@@ -44,8 +44,7 @@ while True:
 
     elitists = pop.bourgeois()
     children = pop.surubao()
-
-    # Mutacao
+    pop.x_men(children)
 
     pop.new_generation((elitists + children))
 

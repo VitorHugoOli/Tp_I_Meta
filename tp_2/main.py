@@ -27,16 +27,17 @@ def restriction2(x, y):
 
 problem_1 = Problem([x1, x2], objective,
                     [Restriction(restriction1), Restriction(restriction2)],
+                    elitism_rate=0.0667236920820883,
+                    cut_point=0.6834153362370213,
+                    t_individuals=3,
+                    n_generations=175,
+                     )
+
+problem_2 = Problem(get_variables(), objective_2, get_restrictions(),
                     elitism_rate=0.049543083097609256,
                     cut_point=0.7424666860388688,
                     t_individuals=2,
                     n_generations=262, )
-
-problem_2 = Problem(get_variables(), objective_2, get_restrictions(),
-                    elitism_rate=0.0667236920820883,
-                    cut_point=0.6834153362370213,
-                    t_individuals=3,
-                    n_generations=175, )
 
 if __name__ == "__main__":
     printMessage("Problema 1")
